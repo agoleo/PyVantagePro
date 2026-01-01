@@ -9,7 +9,6 @@
     :license: GNU GPL v3.
 
 '''
-from __future__ import division, unicode_literals
 import struct
 from datetime import datetime, timedelta
 from pylink import link_from_url, SerialLink

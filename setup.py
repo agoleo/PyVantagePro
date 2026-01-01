@@ -10,7 +10,6 @@
 
 '''
 import re
-import sys
 import os
 from setuptools import setup, find_packages
 
@@ -28,13 +27,6 @@ REQUIREMENTS = [
     'pylink',
     'progressbar-latest',
 ]
-
-if sys.version_info < (2, 7):
-    REQUIREMENTS.append('ordereddict')
-
-if sys.version_info < (2, 7) or (3,) <= sys.version_info < (3, 2):
-    # In the stdlib from 2.7:
-    REQUIREMENTS.append('argparse')
 
 
 with open(os.path.join(os.path.dirname(__file__), 'pyvantagepro',
@@ -59,15 +51,15 @@ setup(
         'Intended Audience :: Science/Research',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.6',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.2',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
         'Topic :: Internet',
         'Topic :: Utilities',
         'Topic :: Software Development :: Libraries :: Python Modules'
     ],
+    python_requires='>=3.10',
     packages=find_packages(),
     zip_safe=False,
     install_requires=REQUIREMENTS,

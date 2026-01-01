@@ -7,13 +7,11 @@
     :license: GNU GPL v3.
 
 '''
-from __future__ import unicode_literals
-import sys
 import time
 import csv
 import binascii
 
-from .compat import to_char, str, bytes, StringIO, is_py3, OrderedDict
+from .compat import to_char, StringIO, OrderedDict
 
 
 def is_text(data):
@@ -58,7 +56,7 @@ class cached_property(object):
         self.__doc__ = doc or func.__doc__
         self.func = func
 
-    def __get__(self, obj, type=None):
+    def __get__(self, obj, objtype=None):
         if obj is None:
             return self
         value = obj.__dict__.get(self.__name__)
@@ -101,10 +99,7 @@ class retry(object):
 
 def bytes_to_hex(byte):
     '''Convert a bytearray to it's hex string representation.'''
-    if sys.version_info[0] >= 3:
-        hexstr = str(binascii.hexlify(byte), "utf-8")
-    else:
-        hexstr = str(binascii.hexlify(byte))
+    hexstr = str(binascii.hexlify(byte), "utf-8")
     data = []
     for i in range(0, len(hexstr), 2):
         data.append("%s" % hexstr[i:i + 2].upper())
@@ -131,14 +126,12 @@ def bytes_to_binary(values):
     >>> bytes_to_binary(b"\x4A\xFF")
     '0100101011111111'
     '''
-    if is_py3:
-        # TODO: Python 3 convert \x00 to integer 0 ?
-        if values == 0:
-            data = '00000000'
-        else:
-            data = ''.join([byte_to_binary(b) for b in values])
+
+    # TODO: Python 3 convert \x00 to integer 0 ?
+    if values == 0:
+        data = '00000000'
     else:
-        data = ''.join(byte_to_binary(ord(b)) for b in values)
+        data = ''.join([byte_to_binary(b) for b in values])
     return data
 
 
@@ -148,9 +141,7 @@ def hex_to_binary(hexstr):
     >>> hex_to_binary("FF")
     '11111111'
     '''
-    if is_py3:
-        return ''.join(byte_to_binary(b) for b in hex_to_bytes(hexstr))
-    return ''.join(byte_to_binary(ord(b)) for b in hex_to_bytes(hexstr))
+    return ''.join(byte_to_binary(b) for b in hex_to_bytes(hexstr))
 
 
 def binary_to_int(buf, start=0, stop=None):
@@ -186,9 +177,7 @@ def dict_to_csv(items, delimiter, header):
         csvwriter = csv.DictWriter(output, fieldnames=items[0].keys(),
                                    delimiter=delimiter)
         if header:
-            csvwriter.writerow(dict((key, key) for key in items[0].keys()))
-            # writeheader is not supported in python2.6
-            # csvwriter.writeheader()
+            csvwriter.writeheader()
         for item in items:
             csvwriter.writerow(dict(item))
 

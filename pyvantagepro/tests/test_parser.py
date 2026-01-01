@@ -9,7 +9,6 @@
     :license: GNU GPL v3.
 
 '''
-from __future__ import unicode_literals
 from datetime import datetime
 import struct
 

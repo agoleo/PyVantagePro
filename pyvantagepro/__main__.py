@@ -10,6 +10,7 @@
 
 '''
 import os
+import sys
 import argparse
 
 from datetime import datetime
@@ -19,7 +20,6 @@ from . import VERSION
 from .logger import active_logger
 from .device import VantagePro2
 from .utils import csv_to_dict
-from .compat import stdout
 
 
 NOW = datetime.now().strftime("%Y-%m-%d %H:%M")
@@ -48,7 +48,6 @@ def getinfo_cmd(args, vp):
 
 def getdata_cmd(args, vp):
     '''Get real-time data command'''
-    args.delim = args.delim.decode("string-escape")
     data = vp.get_current_data().to_csv(delimiter=args.delim)
     args.output.write("%s" % data)
 
@@ -71,7 +70,7 @@ def getarchives(args, vp):
             dates.append(record['Datetime'])
     pbar.finish()
     if not archives:
-        print("No new records were found﻿")
+        print("No new records were found")
     elif len(archives) == 1:
         print("1 new record was found")
     else:
@@ -81,7 +80,6 @@ def getarchives(args, vp):
 
 def getarchives_cmd(args, vp):
     '''Getarchive command.'''
-    args.delim = args.delim.decode("string-escape")
     if args.start is not None:
         args.start = datetime.strptime(args.start, "%Y-%m-%d %H:%M")
     if args.stop is not None:
@@ -92,7 +90,7 @@ def getarchives_cmd(args, vp):
 def update_cmd(args, vp):
     '''Update command.'''
     # create file if not exist
-    with file(args.db, 'a'):
+    with open(args.db, 'a'):
         os.utime(args.db, None)
     with open(args.db, 'r+a') as file_db:
         db = csv_to_dict(file_db, delimiter=args.delim)
@@ -133,7 +131,7 @@ def main():
                                                  ' tools')
     parser.add_argument('--version', action='version',
                         version='PyVantagePro version %s' % VERSION,
-                        help='Print PyVantagePro’s version number and exit.')
+                        help='Print PyVantagePro\'s version number and exit.')
 
     subparsers = parser.add_subparsers(title='The PyVantagePro commands')
     # gettime command
@@ -162,8 +160,8 @@ def main():
                                     'By default the entire contents of the '
                                     'data archive will be downloaded.',
                                func=getarchives_cmd)
-    subparser.add_argument('--output', action='store', default=stdout,
-                           type=argparse.FileType('w', 0),
+    subparser.add_argument('--output', action='store', default=sys.stdout,
+                           type=argparse.FileType('w'),
                            help='Filename where output is written')
     subparser.add_argument('--start', help='The beginning datetime record '
                                            '(like : "%s")' % NOW)
@@ -176,8 +174,8 @@ def main():
     subparser = get_cmd_parser('getdata', subparsers,
                                help='Extract real-time data from the station.',
                                func=getdata_cmd)
-    subparser.add_argument('--output', action="store", default=stdout,
-                           type=argparse.FileType('w', 0),
+    subparser.add_argument('--output', action="store", default=sys.stdout,
+                           type=argparse.FileType('w'),
                            help='Filename where output is written')
     subparser.add_argument('--delim', action="store", default=",",
                            help='CSV char delimiter')

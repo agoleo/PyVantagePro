@@ -7,4 +7,3 @@
     :license: GNU GPL v3.
 
 '''
-from __future__ import unicode_literals
